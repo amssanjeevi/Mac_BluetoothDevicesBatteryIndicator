@@ -34,6 +34,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if !finalArray.isEmpty {
             for eachDetail in finalArray where eachDetail.count > 0 {
                 dropDownMenu!.addItem(withTitle: eachDetail, action: nil, keyEquivalent: "")
+                if eachDetail.contains("%") { dropDownMenu!.addItem(NSMenuItem.separator()) }
             }
         } else {
             dropDownMenu!.addItem(withTitle: "No Bluetooth Devices Found", action: nil, keyEquivalent: "")
@@ -66,7 +67,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         output = output.replacingOccurrences(of: "|", with: "")
         let outputAsArray = output.components(separatedBy: "\n")
         for eachOutput in outputAsArray {
-            finalArray.append(eachOutput.trimmingCharacters(in: CharacterSet.whitespaces))
+            var finalString = eachOutput
+            finalString = finalString.replacingOccurrences(of: "\"", with: "")
+            finalString = finalString.replacingOccurrences(of: "=", with: "-")
+            if eachOutput.lowercased().contains("percent") { finalString = finalString + ("%") }
+            finalArray.append(finalString.trimmingCharacters(in: CharacterSet.whitespaces))
         }
         finalArray.removeLast()
         return output
